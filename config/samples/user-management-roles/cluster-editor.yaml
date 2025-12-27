@@ -1,0 +1,53 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-editor
+  labels:
+    role-type: cluster-role
+    app.kubernetes.io/managed-by: user-management
+  annotations:
+    description: "提供在集群中的资源修改权限."
+    author: "Platform Installer"
+rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["*"]
+    resources: ["pod"]
+    verbs: ["create", "update", "delete"]
+  - apiGroups: ["*"]
+    resources: ["deployment"]
+    verbs: ["create", "update", "delete"]
+  - apiGroups: ["*"]
+    resources: ["daemonset"]
+    verbs: ["create", "update", "delete"]
+  - apiGroups: ["*"]
+    resources: ["StatefulSets "]
+    verbs: ["create", "update", "delete"]
+  - apiGroups: ["*"]
+    resources: ["configmap"]
+    verbs: ["create", "update", "delete"]
+  - apiGroups: ["*"]
+    resources: ["secrets"]
+    verbs: ["create", "update", "delete"]
+  - apiGroups: ["*"]
+    resources: ["job"]
+    verbs: ["create", "update", "delete"]
+  - apiGroups: ["*"]
+    resources: ["cornjob"]
+    verbs: ["create", "update", "delete"]
+  - apiGroups: ["*"]
+    resources: ["service"]
+    verbs: ["create", "update", "delete"]
+  - apiGroups: ["*"]
+    resources: ["ingress"]
+    verbs: ["create", "update", "delete"]
+  - apiGroups: ["*"]
+    resources: ["limitrange"]
+    verbs: ["create", "update", "delete"]
+  - apiGroups: ["*"]
+    resources: ["resourceQuota"]
+    verbs: ["create", "update", "delete"]
+  - apiGroups: ["*"]
+    resources: ["customResource"]
+    verbs: ["create", "update", "delete"]

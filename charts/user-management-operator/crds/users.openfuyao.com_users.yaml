@@ -1,0 +1,115 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.14.0
+  name: users.users.openfuyao.com
+spec:
+  group: users.openfuyao.com
+  names:
+    kind: User
+    listKind: UserList
+    plural: users
+    singular: user
+  scope: Cluster
+  versions:
+    - additionalPrinterColumns:
+        - jsonPath: .status.lockStatus
+          name: Status
+          type: string
+        - description: Creation timestamp
+          jsonPath: .metadata.creationTimestamp
+          name: Age
+          type: date
+        - jsonPath: ..status.RemainAttempts
+          name: RemainAttempts
+          type: integer
+      name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          description: User is the Schema for the users API
+          required:
+            - spec
+          properties:
+            apiVersion:
+              description: |-
+                APIVersion defines the versioned schema of this representation of an object.
+                Servers should convert recognized schemas to the latest internal value, and
+                may reject unrecognized values.
+                More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+              type: string
+            kind:
+              description: |-
+                Kind is a string value representing the REST resource this object represents.
+                Servers may infer this from the endpoint the client submits requests to.
+                Cannot be updated.
+                In CamelCase.
+                More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+              type: string
+            metadata:
+              type: object
+            spec:
+              required:
+                - Username
+                - EncryptedPassword
+                - PlatformRole
+              description: UserSpec defines the desired state of User
+              properties:
+                Description:
+                  description: Description is an optional description of the user.
+                  type: string
+                EncryptedPassword:
+                  description: EncryptedPassword is the user's encrypted password.
+                  format: byte
+                  type: string
+                FirstLogin:
+                  description: FirstLogin indicates whether this is the user's first
+                    login.
+                  type: boolean
+                InvitedByClustersList:
+                  description: InvitedByClustersList contains the list of cluster names
+                    the user is invited to.
+                  items:
+                    type: string
+                  type: array
+                PlatformRole:
+                  description: PlatformRole defines the role of the user within the
+                    platform.
+                  type: string
+                Username:
+                  description: |-
+                    INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+                    Important: Run "make" to regenerate code after modifying this file
+                    Username is the name of the user.
+                  type: string
+                failedLoginRecords:
+                  description: FailedLoginRecords is a list of timestamps for each failed
+                    login attempt.
+                  items:
+                    format: date-time
+                    type: string
+                  type: array
+              type: object
+            status:
+              description: UserStatus defines the observed state of User
+              properties:
+                RemainAttempts:
+                  description: RemainAttempts is the number of remaining login attempts
+                    before the user gets locked.
+                  type: integer
+                lockStatus:
+                  description: |-
+                    INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+                    Important: Run "make" to regenerate code after modifying this file
+                    LockStatus indicates whether the user is locked or unlocked.
+                  type: string
+                lockedTimestamp:
+                  description: LockedTimestamp is the timestamp when the user was locked.
+                  format: date-time
+                  type: string
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}

@@ -1,0 +1,50 @@
+replicaCount: 1
+images:
+  core:
+    repository: "cr.openfuyao.cn/openfuyao/user-management-operator"
+    pullPolicy: Always
+    tag: "latest"
+
+
+serviceAccount:
+  create: true
+  name: user-management-operator
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 9175
+  nodePort: 30024
+
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    effect: "NoSchedule"
+  - key: "node-role.kubernetes.io/master"
+    effect: "NoSchedule"
+
+env:
+  attempts: 5
+  duration: 20
+  consoleServiceEndpoint: "https://console-service.openfuyao-system.svc.cluster.local:80"
+  # the service port for multi-cluster-service, user-management-operator will communicate with it for user permissions
+  multiClusterServicePort: 9027
+
+config:
+  enableTLS: false
+  tlsCert: |
+    -----BEGIN CERTIFICATE-----
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    -----END CERTIFICATE-----
+  tlsKey: |
+    -----BEGIN PRIVATE KEY-----
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    -----END PRIVATE KEY-----
+  rootCA: |
+    -----BEGIN CERTIFICATE-----
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    -----END CERTIFICATE-----
+
+
+namespace:
+  backend: openfuyao-system
+

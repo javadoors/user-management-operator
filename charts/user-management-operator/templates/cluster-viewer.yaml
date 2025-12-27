@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: openfuyao-cluster-viewer
+  labels:
+    role-type: cluster-role
+    app.kubernetes.io/managed-by: user-management
+  annotations:
+    description: "cluster-viewer对于集群中的所有资源仅具有查看的权限。"
+    author: "Platform Installer"
+rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]

@@ -1,0 +1,17 @@
+apiVersion: users.openfuyao.com/v1alpha1
+kind: User
+metadata:
+  labels:
+    app.kubernetes.io/name: user-management
+    app.kubernetes.io/managed-by: kustomize
+  name: Chris
+spec:
+  Description: "This is an example user."
+  EncryptedPassword: test@1234
+  InvitedByClustersList:
+    - ClusterName: "cluster-host"
+    - ClusterName: "cluster-1"
+  Username: Chris
+  PlatformRole: platform-admin
+  FailedLoginAttempts: 0
+

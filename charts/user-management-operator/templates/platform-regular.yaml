@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: openfuyao-platform-regular
+  labels:
+    role-type: platform-role
+    app.kubernetes.io/managed-by: user-management
+  annotations:
+    description: "该角色对于平台没有成员管理和集群管理的权限，只有被platform-admin邀请至集群中并为其分配对应集群权限时才会有相应的集群权限"
+    author: "Platform Installer"
+rules:
+  - apiGroups:
+      - console.openfuyao.com
+    resources:
+      - consoleplugins
+    verbs:
+      - get

@@ -1,0 +1,9 @@
+## Append samples of your project ##
+resources:
+- user-management-roles/cluster-admin.yaml
+- user-management-roles/cluster-viewer.yaml
+- user-management-roles/cluster-editor.yaml
+- user-management-roles/platform-viewer.yaml
+- user-management-roles/platform-editor.yaml
+- user-management-roles/platform-admin.yaml
+#+kubebuilder:scaffold:manifestskustomizesamples

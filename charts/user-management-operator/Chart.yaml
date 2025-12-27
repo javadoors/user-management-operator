@@ -1,0 +1,9 @@
+apiVersion: v2
+name: user-management-operator
+description: > 
+  This chart is responsible for providing management (CRUD) of user custom resources and 
+  handling changes to each user's permissions and role bindings.
+type: application
+version: 0.0.0-latest
+appVersion: "latest"
+keywords: ["openfuyao-component"]

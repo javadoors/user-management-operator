@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: openfuyao-cluster-admin
+  labels:
+    role-type: cluster-role
+    app.kubernetes.io/managed-by: user-management
+  annotations:
+    description: "集群管理员拥有集群内的所有资源的权限。应用管理和扩展组件对于集群级角色只有cluster-admin才具有对应权限。"
+    author: "Platform Installer"
+rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["*"]
+  - nonResourceURLs: ["*"]
+    verbs: ["*"]

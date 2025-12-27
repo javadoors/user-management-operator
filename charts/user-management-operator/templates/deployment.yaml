@@ -1,0 +1,95 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: user-management-operator
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - '*'
+  - nonResourceURLs:
+      - '*'
+    verbs:
+      - '*'
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: user-management-operator
+subjects:
+  - kind: ServiceAccount
+    name: user-management-operator
+    namespace: {{ .Values.namespace.backend }}
+roleRef:
+  kind: ClusterRole
+  name: user-management-operator
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-management-operator
+  namespace: {{ .Values.namespace.backend }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: user-management-operator
+  template:
+    metadata:
+      labels:
+        app: user-management-operator
+    spec:
+      {{ if .Values.tolerations }}
+      tolerations: {{ toYaml .Values.tolerations | nindent 8 }}
+      {{ end }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      containers:
+        - name: user-management-operator
+          image: '{{ list . "core" | include "helpers.image.name" }}'
+          imagePullPolicy: {{ .Values.images.core.pullPolicy }}
+          env:
+            - name: MAX_ATTEMPTS
+              value: {{ .Values.env.attempts | quote }}
+            - name: LOCK_DURATION
+              value: {{ .Values.env.duration | quote }}
+            - name: SERVICE_PORT
+              value: {{ .Values.service.targetPort | quote }}
+            - name: CONSOLE_SERVICE_HOST
+              value: {{ .Values.env.consoleServiceEndpoint | quote }}
+            - name: MULTI_CLUSTER_SERVICE_PORT
+              value: {{ .Values.env.multiClusterServicePort | quote }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/localtime
+              name: host-time
+              readOnly: true
+            {{- if .Values.config.enableTLS }}
+            - name: user-management-operator-tls
+              mountPath: /ssl/ca.pem
+              subPath: ca.crt
+            - name: user-management-operator-tls
+              readOnly: true
+              mountPath: /ssl/server.key
+              subPath: tls.key
+            - name: user-management-operator-tls
+              readOnly: true
+              mountPath: /ssl/server.crt
+              subPath: tls.crt
+            {{- end }}
+      volumes:
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""
+        {{- if .Values.config.enableTLS }}
+        - name: user-management-operator-tls
+          secret:
+            defaultMode: 0600
+            secretName: user-management-operator-tls
+        {{- end }}
